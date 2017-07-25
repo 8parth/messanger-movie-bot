@@ -17,19 +17,22 @@ def wait_for_user_input
       message.typing_on
       case message.text.downcase
       when 'hi', 'hello', 'hey' # we use regexp to match parts of strings
-        message.reply(text: 'Hey there!')
-      when 'got', 'game of thrones'
-        show_url = Shows.search_from_shows('Yukon')
-        if show_url.nil?
-          text = 'Show Not Found!'
-          message.reply(text: text)
-        else
-          xml = HTTParty.get(show_url).body
-          feed = Feedjira::Feed.parse(xml)
-          message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
-        end
+        message.reply(text: 'Hey there!') 
       else
-        message.reply(text: 'I know nothing.')
+        if message.text.start_with?('find')
+          str = message.text.sub('find', '').lstrip
+          show_url = Shows.search_from_shows(str)
+          if show_url.nil?
+            text = 'Show Not Found!'
+            message.reply(text: text)
+          else
+            xml = HTTParty.get(show_url).body
+            feed = Feedjira::Feed.parse(xml)
+            message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
+          end
+        else
+          message.reply(text: 'I know nothing!')
+        end
       end
     rescue => e
       puts e.message
