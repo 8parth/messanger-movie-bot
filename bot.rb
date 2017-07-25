@@ -1,7 +1,7 @@
 require 'facebook/messenger'
 require 'httparty' # you should require this one
 require 'json' # and that one
-require 'dotenv'
+# require 'dotenv'
 Dotenv.load
 
 
