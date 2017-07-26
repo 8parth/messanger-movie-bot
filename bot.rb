@@ -20,6 +20,13 @@ def get_buttons(entries)
     }
   end
 end
+def get_button(entry)
+  {
+    type: 'web_url',
+    url: entry.url,
+    title: entry.title
+  }
+end
 
 def wait_for_user_input
   Bot.on :message do |message|
@@ -41,14 +48,19 @@ def wait_for_user_input
             if entries.nil?
               message.reply(text: 'Could not find anything! Please find some other show')
             else
-              message.reply(attachment:{
-                type:"template",
-                payload:{
-                  template_type:"button",
-                  text:"Found #{entries.length} links... ",
-                  buttons: get_buttons(entries)
-                }
-              })
+              message.reply(text:"Found #{entries.length} links... ")
+              entries.each do |entry|
+                message.reply(
+                  attachment:{
+                    type:"template",
+                    payload:{
+                      text:"LInk",
+                      template_type:"button",
+                      buttons: get_button(entry)
+                    }
+                  }
+                )
+              end
               message.reply(text: 'Hope you found right links!')
             end
             # message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
