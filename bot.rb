@@ -36,7 +36,7 @@ def wait_for_user_input
             message.reply(text: text)
           else
             xml = HTTParty.get(show_url).body
-            entries = Feedjira::Feed.parse(xml).entries
+            entries = Feedjira::Feed.parse(xml).entries.first(5)
             if entries.nil?
               message.reply(text: 'Could not find anything! Please find some other show')
             else
@@ -47,7 +47,7 @@ def wait_for_user_input
                   payload: {
                     template_type: 'list',
                     top_element_style: 'compact',
-                    elements: get_elements(entries.first(5))
+                    elements: get_elements(entries)
                   }
                 }
               )
