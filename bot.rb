@@ -36,7 +36,7 @@ def wait_for_user_input
                 webview_height_ratio: "compact"
               }
             ])
-            message.reply('Hope you found right link!')
+            message.reply(text: 'Hope you found right link!')
             # message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
           end
         else
