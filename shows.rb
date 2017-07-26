@@ -23,8 +23,6 @@ class Shows
 
   def self.search_from_shows(term)
     shows.keys.each do |key|
-      puts key.downcase
-      puts term.downcase
       if key.downcase.include?(term.downcase)
         return shows[key]
       else

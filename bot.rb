@@ -38,7 +38,9 @@ def wait_for_user_input
           else
             xml = HTTParty.get(show_url).body
             entries = Feedjira::Feed.parse(xml).entries
-            if entries.present?
+            if entries.nil?
+              message.reply(text: 'Could not find anything! Please find some other show')
+            else
               message.reply(attachment:{
                 type:"template",
                 payload:{
@@ -48,8 +50,6 @@ def wait_for_user_input
                 }
               })
               message.reply(text: 'Hope you found right links!')
-            else
-              message.reply(text: 'Could not find anything! Please find some other show')
             end
             # message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
           end
@@ -59,6 +59,7 @@ def wait_for_user_input
       end
     rescue => e
       puts e.message
+      message.reply(text: 'Sorry, something bad happened!')
     end
   end
 end
