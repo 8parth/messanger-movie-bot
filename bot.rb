@@ -11,21 +11,13 @@ include Facebook::Messenger
 
 Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
 
-def get_buttons(entries)
+def get_elements(entries)
   entries.map do |entry|
     {
-      type: 'web_url',
-      url: entry.url,
-      title: entry.title
+      title: entry.title,
+      subtitle: entry.url
     }
   end
-end
-def get_button(entry)
-  {
-    type: 'web_url',
-    url: entry.url,
-    title: entry.title
-  }
 end
 
 def wait_for_user_input
@@ -49,14 +41,19 @@ def wait_for_user_input
               message.reply(text: 'Could not find anything! Please find some other show')
             else
               message.reply(text:"Found #{entries.length} links... ")
-              entries.first(5).each do |entry|
-                message.reply(
-                  text: "TITLE: #{entry.title}\nURL: #{entry.url}"
-                )
-              end
+              message.reply(
+                attachment: {
+                  type: 'template',
+                  payload: {
+                    template_type: 'list',
+                    top_element_style: 'compact',
+                    elements: get_elements(entries.first(5))
+                  }
+                }
+              )
               message.reply(text: 'Hope you found right links!')
             end
-            # message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
+            # message.reply(text: "TITLE: #{entry.title}\nURL: #{entry.url}")
           end
         else
           message.reply(text: 'I know nothing!')
