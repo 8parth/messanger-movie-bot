@@ -66,7 +66,6 @@ def wait_for_user_input
                           fallback_url: "http://parthrmodi.com/"
                         },
                       ]
-                      buttons: get_button(entry)
                     }
                   }
                 )
