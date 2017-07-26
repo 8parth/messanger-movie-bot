@@ -80,6 +80,7 @@ def wait_for_user_input
       end
     rescue => e
       puts e.message
+      message.reply(text: e.message)
       message.reply(text: 'Sorry, something bad happened!')
     end
   end
