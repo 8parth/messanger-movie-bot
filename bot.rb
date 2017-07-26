@@ -49,7 +49,7 @@ def wait_for_user_input
               message.reply(text: 'Could not find anything! Please find some other show')
             else
               message.reply(text:"Found #{entries.length} links... ")
-              entries.each do |entry|
+              entries.first(10).each do |entry|
                 message.reply(
                   attachment:{
                     type:"template",
