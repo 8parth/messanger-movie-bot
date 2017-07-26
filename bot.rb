@@ -11,6 +11,16 @@ include Facebook::Messenger
 
 Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
 
+def get_buttons(entries)
+  entries.map do |entry|
+    {
+      type: 'web_url',
+      url: entry.url,
+      title: entry.title
+    }
+  end
+end
+
 def wait_for_user_input
   Bot.on :message do |message|
     begin
@@ -27,16 +37,20 @@ def wait_for_user_input
             message.reply(text: text)
           else
             xml = HTTParty.get(show_url).body
-            feed = Feedjira::Feed.parse(xml)
-            message.reply(buttons: [
-              {
-                type: 'web_url',
-                url: feed.entries.first.url,
-                title: feed.entries.first.title,
-                webview_height_ratio: "compact"
-              }
-            ])
-            message.reply(text: 'Hope you found right link!')
+            entries = Feedjira::Feed.parse(xml).entries
+            if entries.present?
+              message.reply(attachment:{
+                type:"template",
+                payload:{
+                  template_type:"button",
+                  text:"Found #{entries.length} links... ",
+                  buttons: get_buttons(entries)
+                }
+              })
+              message.reply(text: 'Hope you found right links!')
+            else
+              message.reply(text: 'Could not find anything! Please find some other show')
+            end
             # message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
           end
         else
