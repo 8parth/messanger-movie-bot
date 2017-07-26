@@ -17,7 +17,7 @@ def wait_for_user_input
       message.typing_on
       case message.text.downcase
       when 'hi', 'hello', 'hey' # we use regexp to match parts of strings
-        message.reply(text: 'Hey there!') 
+        message.reply(text: 'Hey there!')
       else
         if message.text.start_with?('find')
           str = message.text.sub('find', '').lstrip
@@ -28,7 +28,16 @@ def wait_for_user_input
           else
             xml = HTTParty.get(show_url).body
             feed = Feedjira::Feed.parse(xml)
-            message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
+            message.reply(buttons: [
+              {
+                type: 'web_url',
+                url: feed.entries.first.url,
+                title: feed.entries.first.title,
+                webview_height_ratio: "compact"
+              }
+            ])
+            message.reply('Hope you found right link!')
+            # message.reply(text: "TITLE: #{feed.entries.first.title}\n URL: #{feed.entries.first.url}")
           end
         else
           message.reply(text: 'I know nothing!')
@@ -39,6 +48,5 @@ def wait_for_user_input
     end
   end
 end
-
 
 wait_for_user_input
