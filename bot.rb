@@ -55,7 +55,17 @@ def wait_for_user_input
                     type:"template",
                     payload:{
                       text:"LInk",
-                      template_type:"button",
+                      template_type:"generic",
+                      elements: [
+                        title: entry.title,
+                        default_action: {
+                          type: "web_url",
+                          url: entry.url,
+                          messenger_extensions: true,
+                          webview_height_ratio: "tall",
+                          fallback_url: "http://parthrmodi.com/"
+                        },
+                      ]
                       buttons: get_button(entry)
                     }
                   }
