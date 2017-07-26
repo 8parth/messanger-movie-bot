@@ -49,25 +49,9 @@ def wait_for_user_input
               message.reply(text: 'Could not find anything! Please find some other show')
             else
               message.reply(text:"Found #{entries.length} links... ")
-              entries.first(10).each do |entry|
+              entries.first(5).each do |entry|
                 message.reply(
-                  attachment:{
-                    type:"template",
-                    payload:{
-                      text:"LInk",
-                      template_type:"generic",
-                      elements: [
-                        title: entry.title,
-                        default_action: {
-                          type: "web_url",
-                          url: entry.url,
-                          messenger_extensions: true,
-                          webview_height_ratio: "tall",
-                          fallback_url: "http://parthrmodi.com/"
-                        },
-                      ]
-                    }
-                  }
+                  text: "TITLE: #{entry.title}\nURL: #{entry.url}"
                 )
               end
               message.reply(text: 'Hope you found right links!')
