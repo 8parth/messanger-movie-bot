@@ -3,35 +3,32 @@ require 'httparty' # you should require this one
 require 'feedjira'
 require 'json' # and that one
 require_relative 'shows'
+require_relative 'greetings'
 # require 'dotenv'
 # Dotenv.load
-
 
 include Facebook::Messenger
 
 Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
+Greetings.enable
 
-Facebook::Messenger::Profile.set({
-  greeting: [
-    {
-      locale: 'default',
-      text: "Welcome! I will help you find TV show episodes."
-    }
-  ],
-  get_started: {
-    payload: 'hi'
-  }
-}, access_token: ENV['ACCESS_TOKEN'])
-
-def get_elements(entries)
-  entries.map do |entry|
-    {
-      title: entry.title,
-      subtitle: entry.url
-    }
+Bot.on :postback do |postback|
+  sender_id = postback.sender['id']
+  case postback.payload
+  when 'INITIATE'
+    say(sender_id, 'Type in \'find arrow\' and you will recieve information of last two episodes!')
   end
 end
 
+# helper function to send messages declaratively and directly
+def say(recipient_id, text, quick_replies = nil)
+  message_options = {
+    recipient: { id: recipient_id },
+    message: { text: text }
+  }
+
+  Bot.deliver(message_options, access_token: ENV['ACCESS_TOKEN'])
+end
 
 def wait_for_user_input
   Bot.on :message do |message|
