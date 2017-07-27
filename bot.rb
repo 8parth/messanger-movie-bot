@@ -11,6 +11,18 @@ include Facebook::Messenger
 
 Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
 
+Facebook::Messenger::Profile.set({
+  greeting: [
+    {
+      locale: 'default',
+      text: "Welcome! I will help you find TV show episodes."
+    }
+  ],
+  get_started: {
+    payload: 'find game of thrones'
+  }
+}, access_token: ENV['ACCESS_TOKEN'])
+
 def get_elements(entries)
   entries.map do |entry|
     {
@@ -19,6 +31,7 @@ def get_elements(entries)
     }
   end
 end
+
 
 def wait_for_user_input
   Bot.on :message do |message|
@@ -40,19 +53,11 @@ def wait_for_user_input
             if entries.nil?
               message.reply(text: 'Could not find anything! Please find some other show')
             else
-              message.reply(
-                attachment: {
-                  type: 'template',
-                  payload: {
-                    template_type: 'list',
-                    top_element_style: 'compact',
-                    elements: get_elements(entries)
-                  }
-                }
-              )
+              entries.each do |entry|
+                message.reply(text: "TITLE: #{entry.title}\nURL: #{entry.url}")
+              end
               message.reply(text: 'Hope you found right links!')
             end
-            # message.reply(text: "TITLE: #{entry.title}\nURL: #{entry.url}")
           end
         else
           message.reply(text: 'I know nothing!')
