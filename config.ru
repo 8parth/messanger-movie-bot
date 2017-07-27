@@ -1,6 +1,5 @@
 require './app'
 require_relative 'bot' # you can comment this line out until you create a bot.rb file later in the tutorial
-require 'facebook/messenger'
 
 # run both Sinatra and facebook-messenger on /webhook
 map("/webhook") do

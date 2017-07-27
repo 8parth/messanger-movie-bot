@@ -10,7 +10,19 @@ require_relative 'greetings'
 include Facebook::Messenger
 
 Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
-Greetings.enable
+# Greetings.enable
+
+Facebook::Messenger::Profile.set({
+  greeting: [
+    {
+      locale: 'default',
+      text: 'Welcome! I will help you find TV show episodes.'
+    }
+  ],
+  get_started: {
+    payload: 'INITIATE'
+  }
+}, access_token: ENV['ACCESS_TOKEN'])
 
 Bot.on :postback do |postback|
   sender_id = postback.sender['id']
