@@ -19,7 +19,7 @@ Facebook::Messenger::Profile.set({
     }
   ],
   get_started: {
-    payload: 'find game of thrones'
+    payload: 'hi'
   }
 }, access_token: ENV['ACCESS_TOKEN'])
 
