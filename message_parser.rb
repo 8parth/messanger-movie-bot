@@ -24,6 +24,12 @@ class MessageParser
       else
         @type = 'AMBIGIOUS'
       end
+    when 'how'
+      if message_without_first_letter == 'are you?'
+        @type = 'HOW_ARE_YOU'
+      else
+        @type = 'AMBIGIOUS'
+      end
     when 'who'
       if words.include?('created')
         if words.last.gsub(/\?.*/, '') == 'you'

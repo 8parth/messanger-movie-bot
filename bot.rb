@@ -58,7 +58,7 @@ def create_about_me_button
           {
             type: "web_url",
             url: "https://www.facebook.com/parth.modi.359",
-            title: "My Facebook Profile"
+            title: "Parth Modi's Facebook Profile"
           }
         ]
       }
@@ -77,7 +77,7 @@ def create_about_logo_button
           {
             type: "web_url",
             url: "https://www.facebook.com/rishi.au19",
-            title: "My Facebook Profile"
+            title: "Rishi Dave's Facebook Profile"
           }
         ]
       }
@@ -85,7 +85,7 @@ def create_about_logo_button
   }
 end
 
-def send_show_response(show_url)
+def send_show_response(message, show_url)
   if show_url.nil?
     text = 'Show Not Found!'
     message.reply(text: text)
@@ -121,9 +121,13 @@ def wait_for_user_input
         message.reply(create_about_logo_button)
       when 'FIND_SHOW'
         show_url = Shows.search_from_shows(parser.message_without_first_letter)
-        send_show_response(show_url)
+        send_show_response(message, show_url)
       when 'FIND_SHOW_EMPTY'
         message.reply(text: 'Show not found!')
+      when 'HOW_ARE_YOU'
+        message.reply('I am fine, thanks for asking!')
+        message.reply('Hopefully your day was good! However, I am not comfertable doing small talk. Let me show how I can help you.')
+        message.reply('Just type find name-of-the-show, and I will send name of last episode for that TV show.')
       else
         message.reply(text: 'I know nothing!')
       end
