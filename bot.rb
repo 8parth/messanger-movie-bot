@@ -4,13 +4,13 @@ require 'feedjira'
 require 'json' # and that one
 require_relative 'shows'
 require_relative 'greetings'
+require_relative 'message_parser'
 # require 'dotenv'
 # Dotenv.load
 
 include Facebook::Messenger
 
 Facebook::Messenger::Subscriptions.subscribe(access_token: ENV['ACCESS_TOKEN'])
-# Greetings.enable
 
 Facebook::Messenger::Profile.set({
   greeting: [
@@ -42,35 +42,86 @@ def say(recipient_id, text, quick_replies = nil)
   Bot.deliver(message_options, access_token: ENV['ACCESS_TOKEN'])
 end
 
+def create_about_me_button
+  attachment:{
+    type: "template",
+    payload: {
+      template_type: "button",
+      text: "Hi! I created the bot. Here are the ways you can connect with me.",
+      buttons: [
+        {
+          type: "web_url",
+          url: "http://parthrmodi.com/blog/about/",
+          title: "Blog | About Me"
+        },
+        {
+          type: "web_url",
+          url: "https://www.facebook.com/parth.modi.359",
+          title: "My Facebook Profile"
+        }
+      ]
+    }
+  }
+end
+
+def create_about_logo_button
+  attachment:{
+    type: "template",
+    payload: {
+      template_type: "button",
+      text: "Hi! I created logo of the Movie Bot.",
+      buttons: [
+        {
+          type: "web_url",
+          url: "https://www.facebook.com/rishi.au19",
+          title: "My Facebook Profile"
+        }
+      ]
+    }
+  }
+end
+
+def send_show_response(show_url)
+  if show_url.nil?
+    text = 'Show Not Found!'
+    message.reply(text: text)
+  else
+    xml = HTTParty.get(show_url).body
+    entries = Feedjira::Feed.parse(xml).entries.first(2)
+    if entries.nil?
+      message.reply(text: 'Could not find anything! Please find some other show.')
+    else
+      entries.each do |entry|
+        message.reply(text: "TITLE: #{entry.title}\nURL: #{entry.url}")
+      end
+      message.reply(text: 'Hope you found right links!')
+    end
+  end
+end
+
 def wait_for_user_input
   Bot.on :message do |message|
     begin
       message.typing_on
-      case message.text.downcase
-      when 'hi', 'hello', 'hey' # we use regexp to match parts of strings
+      parser = MessageParser.new(message.text)
+
+      case parser.message_type
+      when 'GREETING'
         message.reply(text: 'Hey there!')
+      when 'ABOUT_SELF'
+        message.reply(text: 'I am learning about TV shows and movies.')
+        message.reply(text: 'Just type find name-of-the-show, and I will send last episode\'s name.')
+      when 'ABOUT_CREATOR'
+        message.reply(create_about_me_button)
+      when 'ABOUT_LOGO'
+        message.reply(create_about_logo_button)
+      when 'FIND_SHOW'
+        show_url = Shows.search_from_shows(parser.message_without_first_letter)
+        send_show_response(show_url)
+      when 'FIND_SHOW_EMPTY'
+        message.reply(text: 'Show not found!')
       else
-        if message.text.start_with?('find')
-          str = message.text.sub('find', '').lstrip
-          show_url = Shows.search_from_shows(str)
-          if show_url.nil?
-            text = 'Show Not Found!'
-            message.reply(text: text)
-          else
-            xml = HTTParty.get(show_url).body
-            entries = Feedjira::Feed.parse(xml).entries.first(2)
-            if entries.nil?
-              message.reply(text: 'Could not find anything! Please find some other show')
-            else
-              entries.each do |entry|
-                message.reply(text: "TITLE: #{entry.title}\nURL: #{entry.url}")
-              end
-              message.reply(text: 'Hope you found right links!')
-            end
-          end
-        else
-          message.reply(text: 'I know nothing!')
-        end
+        message.reply(text: 'I know nothing!')
       end
     rescue => e
       puts e.message
