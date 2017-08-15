@@ -43,40 +43,44 @@ def say(recipient_id, text, quick_replies = nil)
 end
 
 def create_about_me_button
-  attachment:{
-    type: "template",
-    payload: {
-      template_type: "button",
-      text: "Hi! I created the bot. Here are the ways you can connect with me.",
-      buttons: [
-        {
-          type: "web_url",
-          url: "http://parthrmodi.com/blog/about/",
-          title: "Blog | About Me"
-        },
-        {
-          type: "web_url",
-          url: "https://www.facebook.com/parth.modi.359",
-          title: "My Facebook Profile"
-        }
-      ]
+  {
+      attachment: {
+      type: "template",
+      payload: {
+        template_type: "button",
+        text: "Hi! I created the bot. Here are the ways you can connect with me.",
+        buttons: [
+          {
+            type: "web_url",
+            url: "http://parthrmodi.com/blog/about/",
+            title: "Blog | About Me"
+          },
+          {
+            type: "web_url",
+            url: "https://www.facebook.com/parth.modi.359",
+            title: "My Facebook Profile"
+          }
+        ]
+      }
     }
   }
 end
 
 def create_about_logo_button
-  attachment:{
-    type: "template",
-    payload: {
-      template_type: "button",
-      text: "Hi! I created logo of the Movie Bot.",
-      buttons: [
-        {
-          type: "web_url",
-          url: "https://www.facebook.com/rishi.au19",
-          title: "My Facebook Profile"
-        }
-      ]
+  {
+    attachment:{
+      type: "template",
+      payload: {
+        template_type: "button",
+        text: "Hi! I created logo of the Movie Bot.",
+        buttons: [
+          {
+            type: "web_url",
+            url: "https://www.facebook.com/rishi.au19",
+            title: "My Facebook Profile"
+          }
+        ]
+      }
     }
   }
 end
