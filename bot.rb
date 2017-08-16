@@ -96,9 +96,9 @@ def send_show_response(message, show_url)
       message.reply(text: 'Could not find anything! Please find some other show.')
     else
       entries.each do |entry|
-        message.reply(text: "TITLE: #{entry.title}")
+        message.reply(text: "TITLE: #{entry.title}\nURL: #{entry.url}")
       end
-      # message.reply(text: 'Hope you found right links!')
+      message.reply(text: 'Hope you found right links!')
     end
   end
 end
