@@ -5,7 +5,7 @@ class MessageParser
   def initialize(message)
     @message = message.downcase.strip
     @words = message.split(/[^[[:word:]]]+/)
-    @first_word = words[0]
+    @first_word = words[0].downcase
   end
 
   def message_without_first_letter
